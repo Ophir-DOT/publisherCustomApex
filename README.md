@@ -1,18 +1,57 @@
-# Salesforce DX Project: Next Steps
+# Publisher Custom Apex
 
-Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
+Custom Apex classes extending the CompSuite Content Publisher functionality with out-of-the-box (OOTB) enhancements.
 
-## How Do You Plan to Deploy Your Changes?
+## Overview
 
-Do you want to deploy a set of changes, or create a self-contained application? Choose a [development model](https://developer.salesforce.com/tools/vscode/en/user-guide/development-models).
+This project provides custom Apex implementations for the CompSuite Content Publisher package. The classes implement the `CompSuite.CP_DynamicContentGenerator` interface to generate customized HTML/JSON output for Protocol Executions.
 
-## Configure Your Salesforce DX Project
+## Project Structure
 
-The `sfdx-project.json` file contains useful configuration information for your project. See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) in the _Salesforce DX Developer Guide_ for details about this file.
+```
+force-app/
+└── main/
+    └── default/
+        └── classes/
+            └── CP_Advanced_Custom_ProtocolOutput.cls    # Enhanced Protocol Output generator
+```
 
-## Read All About It
+## Classes
 
-- [Salesforce Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
-- [Salesforce CLI Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm)
+### CP_Advanced_Custom_ProtocolOutput
+
+A custom Protocol Output generator with enhanced features:
+
+- **Width-based layout handling** - Implements bin packing algorithm for responsive element layouts
+- **Multiple Protocol Element types** - Supports Table, Test Step, Text Only, Multi Picklist, Single Picklist, Radio Buttons, Free Text, Numeric Value, and more
+- **Training Effectiveness support** - Special handling for exam scoring and pass/fail results
+- **Findings section** - Renders observation/findings data from audits
+- **Signature support** - Handles approval signatures with timestamps
+- **Long word splitting** - Automatically handles text overflow in narrow columns
+
+## Prerequisites
+
+- Salesforce org with CompSuite package installed
+- CompSuite Content Publisher license
+
+## Deployment
+
+Deploy using Salesforce CLI:
+
+```bash
+sf project deploy start --source-dir force-app
+```
+
+Or deploy to a specific org:
+
+```bash
+sf project deploy start --source-dir force-app --target-org <org-alias>
+```
+
+## Usage
+
+The class implements `CompSuite.CP_DynamicContentGenerator` and can be configured in Content Publisher templates to generate custom Protocol Execution output.
+
+## License
+
+Proprietary - Internal use only
