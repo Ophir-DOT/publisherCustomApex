@@ -1,11 +1,13 @@
 /**
- * @description       : This class is used to generate Protocol Output from Content Publisher with enhanced Width based layout handling
+ * @description       : This class generates Protocol Execution Output from Content Publisher with enhanced Width based layout handling.
+ *                      This is the Protocol Execution portion only - does NOT include Findings/Observations.
+ *                      Receives Audit ID as recordId and queries related Protocol Execution(s).
  * @author            : Ceptes
  * @group             :
- * @last modified on  : 12-17-2025
- * @last modified by  : Ceptes
+ * @last modified on  : 02-03-2026
+ * @last modified by  : Claude
  **/
-global with sharing class CP_Advanced_Custom_ProtocolOutput implements CompSuite.CP_DynamicContentGenerator {
+global with sharing class xact_CP_ProtocolExecutionOutput implements CompSuite.CP_DynamicContentGenerator {
   private static final String RT_PE_MULTI_PICKLIST = 'Multi Picklist';
   private static final String RT_PE_TRAINEFFECT = 'Training Effectiveness';
   private static final String RT_PE_TABLE = 'Table';
@@ -32,7 +34,7 @@ global with sharing class CP_Advanced_Custom_ProtocolOutput implements CompSuite
   }
 
   public String getFormatedData(String recordId, string widthInput) {
-    string strId = recordId;
+    string strAuditId = recordId;
     string strHTMLData = '';
     string proExeRecordType;
     Decimal score;
@@ -41,13 +43,28 @@ global with sharing class CP_Advanced_Custom_ProtocolOutput implements CompSuite
     lstwrp = new List<WrpCmpContent>();
     lstwrpSections = new List<WrpSections>();
 
-    CompSuite__Protocol_Execution__c proExe = [
+    // Query Protocol Execution(s) related to the Audit ID
+    List<CompSuite__Protocol_Execution__c> proExeList = [
       SELECT Id, Name, RecordTypeId, RecordType.Name, CompSuite__Protocol_Execution_Number__c, CompSuite__Passing_Score__c, CompSuite__Result__c, CompSuite__Exam_Date__c, CompSuite__Audit__c
       FROM CompSuite__Protocol_Execution__c
-      WHERE Id = :strId
+      WHERE CompSuite__Audit__c = :strAuditId
       WITH SECURITY_ENFORCED
-      LIMIT 1
+      ORDER BY Name
     ];
+
+    // If no Protocol Executions found, return empty string
+    if (proExeList.isEmpty()) {
+      return '';
+    }
+
+    // Use the first Protocol Execution for header/summary data
+    CompSuite__Protocol_Execution__c proExe = proExeList[0];
+
+    // Collect all Protocol Execution IDs for querying Execution Elements
+    Set<Id> proExeIds = new Set<Id>();
+    for (CompSuite__Protocol_Execution__c pe : proExeList) {
+      proExeIds.add(pe.Id);
+    }
 
     proExeRecordType = proExe.RecordType.Name;
     score = proExe.CompSuite__Result__c;
@@ -85,7 +102,7 @@ global with sharing class CP_Advanced_Custom_ProtocolOutput implements CompSuite
           Employee_Answer__c,
           CompSuite__Free_Text__c
         FROM CompSuite__Execution_Element__c
-        WHERE CompSuite__Protocol_Execution__c = :strId
+        WHERE CompSuite__Protocol_Execution__c IN :proExeIds
         ORDER BY CompSuite__Protocol_Element__r.CompSuite__Order__c, CompSuite__Protocol_Element__r.CompSuite__Protocol_Element_Number__c, CompSuite__Row_Index__c
       ]
     );
@@ -398,56 +415,6 @@ global with sharing class CP_Advanced_Custom_ProtocolOutput implements CompSuite
       }
     }
 
-    List<CompSuite__Observation__c> lstFinding = [
-      SELECT Finding_ID__c, CompSuite__Observation_Date__c, CompSuite__Observation_Description__c
-      FROM CompSuite__Observation__c
-      WHERE CompSuite__Audit__c = :proExe.CompSuite__Audit__c
-      ORDER BY Finding_ID__c ASC
-    ];
-    // strHTMLData += '<div style="font-family: \'TT Norms Pro\', Aptos, Arial, Helvetica, sans-serif;font-size: 10pt;page-break-inside:avoid;width:100%;display:table;">';
-    // strHTMLData += '<table style="-fs-table-paginate: paginate;padding:0px;margin:0px;border-collapse: collapse;min-width: 100% !important;">';
-    // strHTMLData += '   <thead>';
-    // strHTMLData += '     <th style="padding:2px;border:1px solid black;width:50%">Findings</th>';
-    // strHTMLData += '   </thead>';
-    // strHTMLData += '   <tbody>';
-    // for (CompSuite__Observation__c obs : lstFinding) {
-    //   strHTMLData += '     <tr><td><div>';
-    //   strHTMLData += '       <p style="padding:2px;"><b>Finding Name: </b>' + obs.Finding_ID__c + '</p>';
-    //   strHTMLData += '       <p style="padding:2px;"><b>Finding Description: </b>' + obs.CompSuite__Observation_Description__c + '</p>';
-    //   strHTMLData += '       <p style="padding:2px;"><b>Finding Date: </b>' + formatAnswer('DATE', null, obs.CompSuite__Observation_Date__c, null, false) + '</p>';
-    //   strHTMLData += '     </div></td></tr>';
-    // }
-    // strHTMLData += '   </tbody>';
-    // strHTMLData += '</table>';
-    // strHTMLData += '</div>';
-
-    // Findings sections
-
-    strHTMLData += '<div style="font-family: \'TT Norms Pro\', Aptos, Arial, Helvetica, sans-serif; font-size: 10pt;align-content: center;width:100%;">';
-    for (CompSuite__Observation__c obs : lstFinding) {
-      strHTMLData += '<div style="font-family: \'TT Norms Pro\', Aptos, Arial, Helvetica, sans-serif; font-size: 10pt;align-content: center;width:100%;">';
-      strHTMLData += '<div style="width:100%;display:table;table-layout:fixed;">';
-      strHTMLData += '    <div style="border:1px solid black; margin-bottom:10px; page-break-inside:avoid;">';
-      strHTMLData += '      <div style="background-color:black; color:white; font-weight:bold; padding:4px;">Findings</div>';
-      strHTMLData += '    </div>';
-      strHTMLData += '  </div>';
-
-      strHTMLData += '<div style="width:100%;display:table;table-layout:fixed;">';
-      strHTMLData += '  <div style="padding:4px;border:1px solid black;vertical-align: top;display:table-cell;width:100%;">';
-      // strHTMLData += '    <div style="border:1px solid black; margin-bottom:10px; page-break-inside:avoid;">';
-      strHTMLData += '      <div style="padding:10px 6px 6px 10px;">';
-      strHTMLData += '        <p style="margin:2px 0;"><b>Finding Name: </b>' + obs.Finding_ID__c + '</p>';
-      strHTMLData += '        <p style="margin:2px 0;"><b>Finding Description: </b>' + obs.CompSuite__Observation_Description__c + '</p>';
-      strHTMLData += '        <p style="margin:2px 0;"><b>Finding Date: </b>' + formatAnswer('DATE', null, obs.CompSuite__Observation_Date__c, null, false) + '</p>';
-      strHTMLData += '      </div>';
-      // strHTMLData += '    </div>';
-      strHTMLData += '  </div>';
-      strHTMLData += '</div>';
-      strHTMLData += '<br/>';
-    }
-
-    strHTMLData += '</div>';
-
     // Handle any remaining incomplete section
     if (!wrpsections.lstwrp.isEmpty()) {
       wrpsections.sectionCount = wrpsections.lstwrp.size();
@@ -599,7 +566,7 @@ global with sharing class CP_Advanced_Custom_ProtocolOutput implements CompSuite
             avoidcode = false;
           }
           //strHTMLData+='<div style=" width:100%">' ; margin:4px;
-          /*   strHTMLData+='<div style="border-top:0px solid black;display:table; width:100%">' ; 
+          /*   strHTMLData+='<div style="border-top:0px solid black;display:table; width:100%">' ;
                     strHTMLData+= '<br/>' ;
                     strHTMLData+= '</div>' ;*/
           //  strHTMLData+='<div style="padding:4px;margin:0px;border: 1px solid black;"  >' ;
@@ -681,8 +648,8 @@ global with sharing class CP_Advanced_Custom_ProtocolOutput implements CompSuite
                     strHTMLData+='     </div>';
                     strHTMLData+='<div >';
                     strHTMLData+=''+wrp.description+'';
-                    strHTMLData+='     </div>'; 
-                    strHTMLData+='     </div>';                  
+                    strHTMLData+='     </div>';
+                    strHTMLData+='     </div>';
 */
 
           // strHTMLData+='<table  style="border-collapse: collapse; padding:0px;margin:0px ; min-width: 100% !important;">';
