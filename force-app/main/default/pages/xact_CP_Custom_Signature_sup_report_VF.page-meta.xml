@@ -3,5 +3,5 @@
     <apiVersion>62.0</apiVersion>
     <availableInTouch>false</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
-    <label>xact_CP_Custom_Signature_VF</label>
+    <label>xact_CP_Custom_Signature_sup_report_VF</label>
 </ApexPage>

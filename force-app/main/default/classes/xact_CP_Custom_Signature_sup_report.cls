@@ -2,10 +2,10 @@
  * @description       : Dynamic class to generate Signature table with xact styling
  * @author            : Claude
  * @group             :
- * @last modified on  : 02-03-2026
+ * @last modified on  : 02-09-2026
  * @last modified by  : Claude
  **/
-global class xact_CP_Custom_Signature implements CompSuite.CP_DynamicContentGenerator {
+global class xact_CP_Custom_Signature_sup_report implements CompSuite.CP_DynamicContentGenerator {
     public string getJSON(Id recordId, String input) {
         return null;
     }

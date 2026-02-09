@@ -1,4 +1,4 @@
-<apex:page controller="xact_CP_Custom_Signature_Ctrl">
+<apex:page controller="xact_CP_Custom_Signature_sup_report_Ctrl">
     <head>
         <style>
             @page {
@@ -19,11 +19,11 @@
             </div>
 
             <table style="border: 1px solid black; border-collapse: collapse; width: 90%; text-align: center; margin-top: 20px;" align="center">
-                <tr>
-                    <th style="border: 1px solid black; text-align: center;">Action Name</th>
-                    <th style="border: 1px solid black; text-align: center;">User Name</th>
-                    <th style="border: 1px solid black; text-align: center;">Title</th>
-                    <th style="border: 1px solid black; text-align: center;">Signature Date</th>
+                <tr style="background-color: #000000; color: white;">
+                    <th style="border: 1px solid black; text-align: center; padding: 6px 10px;">Action Name</th>
+                    <th style="border: 1px solid black; text-align: center; padding: 6px 10px;">User Name</th>
+                    <th style="border: 1px solid black; text-align: center; padding: 6px 10px;">Title</th>
+                    <th style="border: 1px solid black; text-align: center; padding: 6px 10px;">Signature Date</th>
                 </tr>
 
                 <apex:repeat value="{!signatureObjectList}" var="transition">

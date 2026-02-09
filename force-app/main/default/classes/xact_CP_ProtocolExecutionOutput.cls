@@ -5,7 +5,7 @@
  * @author            : Ceptes
  * @group             :
  * @last modified on  : 02-03-2026
- * @last modified by  : Claude
+ * @last modified by  : Ophir Peleg
  **/
 global with sharing class xact_CP_ProtocolExecutionOutput implements CompSuite.CP_DynamicContentGenerator {
   private static final String RT_PE_MULTI_PICKLIST = 'Multi Picklist';

@@ -1,11 +1,11 @@
 /**
- * @description       : Controller for xact_CP_Custom_Signature_VF page with xact styling
+ * @description       : Controller for xact_CP_Custom_Signature_sup_report_VF page with xact styling
  * @author            : Claude
  * @group             :
- * @last modified on  : 02-03-2026
+ * @last modified on  : 02-09-2026
  * @last modified by  : Claude
  **/
-public with sharing class xact_CP_Custom_Signature_Ctrl {
+public with sharing class xact_CP_Custom_Signature_sup_report_Ctrl {
     public List<SignatureObject> signatureObjectList { set; get; }
     public String strGmt { set; get; }
     public Integer intGmt { set; get; }
@@ -21,7 +21,7 @@ public with sharing class xact_CP_Custom_Signature_Ctrl {
         private set;
     }
 
-    public xact_CP_Custom_Signature_Ctrl() {
+    public xact_CP_Custom_Signature_sup_report_Ctrl() {
         try {
             intGmt = integer.valueof(CompSuite__Aspose_Utils__c.getValues('PdfTimeZone').CompSuite__value__c);
         } catch (exception e) {
@@ -47,50 +47,48 @@ public with sharing class xact_CP_Custom_Signature_Ctrl {
         pageSize = intWidth + 'px ' + intHeight + 'px';
         signatureObjectList = new List<SignatureObject>();
 
-        Map<String, String> title2signatureMapTime = new Map<String, String>();
+        List<CompSuite__Transition_Audit_Trail__c> myTransitionAuditTrail = [
+            SELECT
+                CompSuite__State_Transition__c,
+                CompSuite__User_Title__c,
+                CompSuite__Started_By__c,
+                CompSuite__Started_By__r.Name,
+                CompSuite__State_Transition__r.Name,
+                Name,
+                Id,
+                CreatedDate
+            FROM CompSuite__Transition_Audit_Trail__c
+            WHERE CompSuite__Object_Id__c = :strId
+            WITH SECURITY_ENFORCED
+        ];
 
-        List<CompSuite__Transition_Audit_Trail__c> myTransitionAuditTrail = new List<CompSuite__Transition_Audit_Trail__c>(
-            [
-                SELECT
-                    CompSuite__State_Transition__c,
-                    CompSuite__User_Title__c,
-                    CompSuite__Started_By__c,
-                    CompSuite__Started_By__r.Name,
-                    CompSuite__Started_By__r.Title,
-                    CompSuite__Source__c,
-                    CompSuite__Signed__c,
-                    CompSuite__Object_Id__c,
-                    CompSuite__State_Transition__r.Name,
-                    Name,
-                    Id,
-                    CompSuite__Destination__c,
-                    CreatedDate
-                FROM CompSuite__Transition_Audit_Trail__c
-                WHERE CompSuite__Object_Id__c = :strId
-            ]
-        );
-
-        List<CompSuite__Transition_Audit_Trail__c> newTransitionAuditTrail = new List<CompSuite__Transition_Audit_Trail__c>();
+        // Find the last "Complete" record (most recent by CreatedDate)
+        CompSuite__Transition_Audit_Trail__c lastCompleteRecord = null;
         for (CompSuite__Transition_Audit_Trail__c tmpTrail : myTransitionAuditTrail) {
-            if (tmpTrail.CompSuite__Object_Id__c.equals(strId)) {
-                newTransitionAuditTrail.add(tmpTrail);
+            String actionName = tmpTrail.CompSuite__State_Transition__r.Name;
+            if (tmpTrail.Name.contains('-')) {
+                actionName = tmpTrail.Name;
+            }
+
+            // Check if this is a "Complete" action
+            if (actionName != null && actionName.equalsIgnoreCase('Response Provided')) {
+                // Keep the most recent Complete record
+                if (lastCompleteRecord == null || tmpTrail.CreatedDate > lastCompleteRecord.CreatedDate) {
+                    lastCompleteRecord = tmpTrail;
+                }
             }
         }
 
-        CompSuite__Transition_Audit_Trail__c comAT;
-        String swapAction;
-        for (CompSuite__Transition_Audit_Trail__c tmpTrail : myTransitionAuditTrail) {
-            comAT = tmpTrail;
-            swapAction = comAT.CompSuite__State_Transition__r.Name;
-            if (comAT.Name.contains('-')) {
-                swapAction = comAT.Name;
+        // Add only the last Complete record to the signature list
+        if (lastCompleteRecord != null) {
+            String swapAction = lastCompleteRecord.CompSuite__State_Transition__r.Name;
+            if (lastCompleteRecord.Name.contains('-')) {
+                swapAction = lastCompleteRecord.Name;
             }
             signatureObjectList.add(
-                new SignatureObject(comAT.CompSuite__Started_By__r.Name, comAT.CompSuite__User_Title__c, swapAction, comAT.CreatedDate)
+                new SignatureObject(lastCompleteRecord.CompSuite__Started_By__r.Name, lastCompleteRecord.CompSuite__User_Title__c, swapAction, lastCompleteRecord.CreatedDate)
             );
         }
-
-        signatureObjectList.sort();
     }
 
     public class SignatureObject implements Comparable {
