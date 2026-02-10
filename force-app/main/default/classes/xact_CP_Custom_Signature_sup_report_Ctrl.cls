@@ -2,7 +2,7 @@
  * @description       : Controller for xact_CP_Custom_Signature_sup_report_VF page with xact styling
  * @author            : Ophir Peleg
  * @group             :
- * @last modified on  : 02-09-2026
+ * @last modified on  : 02-10-2026
  * @last modified by  : Claude
  **/
 public with sharing class xact_CP_Custom_Signature_sup_report_Ctrl {
@@ -49,11 +49,8 @@ public with sharing class xact_CP_Custom_Signature_sup_report_Ctrl {
 
         List<CompSuite__Transition_Audit_Trail__c> myTransitionAuditTrail = [
             SELECT
-                CompSuite__State_Transition__c,
                 CompSuite__User_Title__c,
-                CompSuite__Started_By__c,
                 CompSuite__Started_By__r.Name,
-                CompSuite__State_Transition__r.Name,
                 Name,
                 Id,
                 CreatedDate
@@ -62,31 +59,18 @@ public with sharing class xact_CP_Custom_Signature_sup_report_Ctrl {
             WITH SECURITY_ENFORCED
         ];
 
-        // Find the last "Complete" record (most recent by CreatedDate)
-        CompSuite__Transition_Audit_Trail__c lastCompleteRecord = null;
+        // Find the last transition record (most recent by CreatedDate)
+        CompSuite__Transition_Audit_Trail__c lastRecord = null;
         for (CompSuite__Transition_Audit_Trail__c tmpTrail : myTransitionAuditTrail) {
-            String actionName = tmpTrail.CompSuite__State_Transition__r.Name;
-            if (tmpTrail.Name.contains('-')) {
-                actionName = tmpTrail.Name;
-            }
-
-            // Check if this is a "Complete" action
-            if (actionName != null && actionName.equalsIgnoreCase('Response Provided')) {
-                // Keep the most recent Complete record
-                if (lastCompleteRecord == null || tmpTrail.CreatedDate > lastCompleteRecord.CreatedDate) {
-                    lastCompleteRecord = tmpTrail;
-                }
+            if (lastRecord == null || tmpTrail.CreatedDate > lastRecord.CreatedDate) {
+                lastRecord = tmpTrail;
             }
         }
 
-        // Add only the last Complete record to the signature list
-        if (lastCompleteRecord != null) {
-            String swapAction = lastCompleteRecord.CompSuite__State_Transition__r.Name;
-            if (lastCompleteRecord.Name.contains('-')) {
-                swapAction = lastCompleteRecord.Name;
-            }
+        // Add only the last record to the signature list
+        if (lastRecord != null) {
             signatureObjectList.add(
-                new SignatureObject(lastCompleteRecord.CompSuite__Started_By__r.Name, lastCompleteRecord.CompSuite__User_Title__c, swapAction, lastCompleteRecord.CreatedDate)
+                new SignatureObject(lastRecord.CompSuite__Started_By__r.Name, lastRecord.CompSuite__User_Title__c, lastRecord.CreatedDate)
             );
         }
     }
@@ -94,14 +78,12 @@ public with sharing class xact_CP_Custom_Signature_sup_report_Ctrl {
     public class SignatureObject implements Comparable {
         public String userName { set; get; }
         public String userTitle { set; get; }
-        public String actionName { set; get; }
         public String formattedDate { set; get; }
         public DateTime signatureDate { set; get; }
 
-        public SignatureObject(String newUserName, String newUserTitle, String newActionName, DateTime newSignatureDate) {
+        public SignatureObject(String newUserName, String newUserTitle, DateTime newSignatureDate) {
             userName = newUserName;
             userTitle = newUserTitle;
-            actionName = newActionName;
             signatureDate = newSignatureDate;
             formattedDate = newSignatureDate.format('dd-MMM-yyyy HH:mm', orgTimeZone);
         }

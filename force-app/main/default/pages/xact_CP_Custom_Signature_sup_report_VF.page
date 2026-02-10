@@ -8,19 +8,12 @@
     </head>
     <body>
         <div style="font-family: 'TT Norms Pro', Aptos, Arial, Helvetica, sans-serif; font-size: 10pt;">
-            <div style="border: 1px solid black; width: 90%; text-align: center; margin-top: 50px; margin-left: 5%;">
-                <div style="margin: 5px; text-align: justify;">
-                    This is a representation of an electronic record that was signed electronically and this page is the manifestation of the electronic signatures.
-                </div>
-            </div>
-
             <div style="width: 90%; text-align: center; margin-top: 20px; margin-left: 5%;">
                 <h2>Signatory Table</h2>
             </div>
 
             <table style="border: 1px solid black; border-collapse: collapse; width: 90%; text-align: center; margin-top: 20px;" align="center">
                 <tr style="background-color: #000000; color: white;">
-                    <th style="border: 1px solid black; text-align: center; padding: 6px 10px;">Action Name</th>
                     <th style="border: 1px solid black; text-align: center; padding: 6px 10px;">User Name</th>
                     <th style="border: 1px solid black; text-align: center; padding: 6px 10px;">Title</th>
                     <th style="border: 1px solid black; text-align: center; padding: 6px 10px;">Signature Date</th>
@@ -28,9 +21,6 @@
 
                 <apex:repeat value="{!signatureObjectList}" var="transition">
                     <tr style="border: 1px solid black;">
-                        <td style="border: 1px solid black; text-align: center;">
-                            <apex:outputText value="{!transition.ActionName}" />
-                        </td>
                         <td style="border: 1px solid black; text-align: center;">
                             <apex:outputText value="{!transition.UserName}" />
                         </td>
