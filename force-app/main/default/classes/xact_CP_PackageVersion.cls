@@ -1,6 +1,6 @@
 /**
  * @description       : Dynamic class to return CompSuite Package Version
- * @author            : Claude
+ * @author            : Ophir Peleg
  * @group             :
  * @last modified on  : 02-05-2026
  * @last modified by  : Claude

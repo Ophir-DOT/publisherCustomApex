@@ -1,6 +1,6 @@
 /**
  * @description       : Controller for xact_CP_Custom_Signature_sup_report_VF page with xact styling
- * @author            : Claude
+ * @author            : Ophir Peleg
  * @group             :
  * @last modified on  : 02-09-2026
  * @last modified by  : Claude

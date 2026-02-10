@@ -2,7 +2,7 @@
  * @description       : Extended Related Findings Output Component for Content Publisher.
  *                      Generates HTML output for Findings with related NC (Deviations),
  *                      Immediate Actions, and CAPA Plans with nested CAPA records.
- * @author            : Ceptes
+ * @author            : Ophir Peleg
  * @last modified on  : 02-04-2026
  * @last modified by  : Claude
  **/

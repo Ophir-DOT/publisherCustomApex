@@ -1,7 +1,7 @@
 /**
  * @description       : This class generates Related Findings (Observations) Output from Content Publisher.
  *                      Receives the Audit ID directly and queries Observations related to that Audit.
- * @author            : Ceptes
+ * @author            : Ophir Peleg
  * @group             :
  * @last modified on  : 02-03-2026
  * @last modified by  : Claude

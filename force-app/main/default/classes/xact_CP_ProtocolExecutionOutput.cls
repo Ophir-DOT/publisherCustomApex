@@ -2,7 +2,7 @@
  * @description       : This class generates Protocol Execution Output from Content Publisher with enhanced Width based layout handling.
  *                      This is the Protocol Execution portion only - does NOT include Findings/Observations.
  *                      Receives Audit ID as recordId and queries related Protocol Execution(s).
- * @author            : Ceptes
+ * @author            : Ophir Peleg
  * @group             :
  * @last modified on  : 02-03-2026
  * @last modified by  : Ophir Peleg

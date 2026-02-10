@@ -1,6 +1,6 @@
 /**
  * @description       : Dynamic class to generate Signature table with xact styling
- * @author            : Claude
+ * @author            : Ophir Peleg
  * @group             :
  * @last modified on  : 02-09-2026
  * @last modified by  : Claude

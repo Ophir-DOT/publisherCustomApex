@@ -1,6 +1,6 @@
 /**
  * @description       : This class is used to generate Protocol Output from Content Publisher with enhanced Width based layout handling
- * @author            : Ceptes
+ * @author            : Ophir Peleg
  * @group             :
  * @last modified on  : 12-17-2025
  * @last modified by  : Ceptes
