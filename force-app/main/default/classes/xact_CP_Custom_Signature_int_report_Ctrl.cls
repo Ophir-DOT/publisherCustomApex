@@ -1,11 +1,10 @@
 /**
- * @description       : Controller for xact_CP_Custom_Signature_sup_report_VF page with xact styling
+ * @description       : Controller for xact_CP_Custom_Signature_int_report_VF page - shows ALL signatures
  * @author            : Ophir Peleg
- * @group             :
- * @last modified on  : 02-10-2026
+ * @last modified on  : 02-11-2026
  * @last modified by  : Claude
  **/
-public with sharing class xact_CP_Custom_Signature_sup_report_Ctrl {
+public with sharing class xact_CP_Custom_Signature_int_report_Ctrl {
     public List<SignatureObject> signatureObjectList { set; get; }
     public String strGmt { set; get; }
     public Integer intGmt { set; get; }
@@ -21,7 +20,7 @@ public with sharing class xact_CP_Custom_Signature_sup_report_Ctrl {
         private set;
     }
 
-    public xact_CP_Custom_Signature_sup_report_Ctrl() {
+    public xact_CP_Custom_Signature_int_report_Ctrl() {
         try {
             intGmt = integer.valueof(CompSuite__Aspose_Utils__c.getValues('PdfTimeZone').CompSuite__value__c);
         } catch (exception e) {
@@ -61,26 +60,21 @@ public with sharing class xact_CP_Custom_Signature_sup_report_Ctrl {
             WITH SECURITY_ENFORCED
         ];
 
-        // Find the last transition record (most recent by CreatedDate)
-        CompSuite__Transition_Audit_Trail__c lastRecord = null;
+        // Add ALL transition records (not just the last one)
         for (CompSuite__Transition_Audit_Trail__c tmpTrail : myTransitionAuditTrail) {
-            if (lastRecord == null || tmpTrail.CreatedDate > lastRecord.CreatedDate) {
-                lastRecord = tmpTrail;
-            }
-        }
-
-        // Add only the last record to the signature list
-        if (lastRecord != null) {
             // Extract action name using the same logic as CP_Custom_Signature_Ctrl
-            String swapAction = lastRecord.CompSuite__State_Transition__r.Name;
-            if (lastRecord.Name.contains('-')) {
-                swapAction = lastRecord.Name;
+            String swapAction = tmpTrail.CompSuite__State_Transition__r.Name;
+            if (tmpTrail.Name.contains('-')) {
+                swapAction = tmpTrail.Name;
             }
 
             signatureObjectList.add(
-                new SignatureObject(swapAction, lastRecord.CompSuite__Started_By__r.Name, lastRecord.CompSuite__User_Title__c, lastRecord.CreatedDate)
+                new SignatureObject(swapAction, tmpTrail.CompSuite__Started_By__r.Name, tmpTrail.CompSuite__User_Title__c, tmpTrail.CreatedDate)
             );
         }
+
+        // Sort by date
+        signatureObjectList.sort();
     }
 
     public class SignatureObject implements Comparable {

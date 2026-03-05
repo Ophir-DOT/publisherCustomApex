@@ -193,7 +193,7 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
 
     return new Map<Id, CompSuite__Deviation__c>(
       [
-        SELECT Id, Name
+        SELECT Id, Name, Deviation_Number__c
         FROM CompSuite__Deviation__c
         WHERE Id IN :ncIds
         WITH SECURITY_ENFORCED
@@ -208,7 +208,7 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
 
     return new Map<Id, CompSuite__Immediate_Action__c>(
       [
-        SELECT Id, Name, Action_Description__c, Type__c, Owner.Name, CompSuite__State__r.Name, Planned_Due_Date__c, Effective_Completion_Date__c
+        SELECT Id, Name, Immediate_Action_Number__c, Action_Description__c, Type__c, Owner.Name, CompSuite__State__r.Name, Planned_Due_Date__c, Effective_Completion_Date__c
         FROM CompSuite__Immediate_Action__c
         WHERE Id IN :iaIds
         WITH SECURITY_ENFORCED
@@ -239,7 +239,7 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
     }
 
     List<CompSuite__CAPA__c> capaList = [
-      SELECT Id, CAPA_Plan__c, CompSuite__Action_Plan_Description__c, Owner.Name, CompSuite__State__r.Name, CompSuite__Due_Date__c, Extended_Due_Date__c, Completion_Date__c
+      SELECT Id, Name, CAPA_Plan__c, CompSuite__Action_Plan_Description__c, Owner.Name, CompSuite__State__r.Name, CompSuite__Due_Date__c, Extended_Due_Date__c, Completion_Date__c
       FROM CompSuite__CAPA__c
       WHERE CAPA_Plan__c IN :capaPlanIds
       WITH SECURITY_ENFORCED
@@ -361,7 +361,7 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
     html += '<div style="width:100%;display:table;table-layout:fixed;">';
     html += '<div style="padding:4px;border:1px solid black;vertical-align:top;display:table-cell;width:100%;">';
     html += '<div style="padding:10px 6px 6px 10px;">';
-    html += '<p style="margin:2px 0;"><b>Finding Name: </b>' + safeString(wrapper.finding.Name) + '</p>';
+    html += '<p style="margin:2px 0;"><b>Finding Number: </b>' + safeString(wrapper.finding.Finding_ID__c) + '</p>';
     html += '<p style="margin:2px 0;"><b>Finding Description: </b>' + safeString(wrapper.finding.CompSuite__Observation_Description__c) + '</p>';
     html += '<p style="margin:2px 0;"><b>Finding Classification: </b>' + safeString(wrapper.finding.CompSuite__Observation_Class__c) + '</p>';
     html += '<p style="margin:2px 0;"><b>Finding Status: </b>' + (wrapper.finding.CompSuite__State__r != null ? safeString(wrapper.finding.CompSuite__State__r.Name) : '') + '</p>';
@@ -392,16 +392,20 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
     html += '</div>';
     html += '</div>';
 
-    // NC content
-    html += '<div style="width:100%;display:table;table-layout:fixed;">';
-    html += '<div style="padding:4px;border:1px solid black;vertical-align:top;display:table-cell;width:100%;">';
-    html += '<div style="padding:10px 6px 6px 10px; font-size: ' + FONT_SIZE + ';">';
-    for (CompSuite__Deviation__c nc : ncRecords) {
-      html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';">&bull; <b>NC Number: </b>' + safeString(nc.Name) + '</p>';
+    // Each NC record in its own container with spacing between
+    for (Integer i = 0; i < ncRecords.size(); i++) {
+      CompSuite__Deviation__c nc = ncRecords[i];
+      if (i > 0) {
+        html += '<br/>';
+      }
+      html += '<div style="width:100%;display:table;table-layout:fixed;">';
+      html += '<div style="padding:4px;border:1px solid black;vertical-align:top;display:table-cell;width:100%;">';
+      html += '<div style="padding:10px 6px 6px 10px; font-size: ' + FONT_SIZE + ';">';
+      html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Non-Conformity Number: </b>' + safeString(nc.Deviation_Number__c) + '</p>';
+      html += '</div>';
+      html += '</div>';
+      html += '</div>';
     }
-    html += '</div>';
-    html += '</div>';
-    html += '</div>';
 
     html += '</td>';
     html += '</tr>';
@@ -429,16 +433,20 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
     html += '</div>';
     html += '</div>';
 
-    // Each IA record in its own container
-    for (CompSuite__Immediate_Action__c ia : iaRecords) {
+    // Each IA record in its own container with spacing between
+    for (Integer i = 0; i < iaRecords.size(); i++) {
+      CompSuite__Immediate_Action__c ia = iaRecords[i];
+      if (i > 0) {
+        html += '<br/>';
+      }
       html += '<div style="width:100%;display:table;table-layout:fixed;">';
       html += '<div style="padding:4px;border:1px solid black;vertical-align:top;display:table-cell;width:100%;">';
       html += '<div style="padding:10px 6px 6px 10px; font-size: ' + FONT_SIZE + ';">';
-      html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Name: </b>' + safeString(ia.Name) + '</p>';
-      html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Description: </b>' + safeString(ia.Action_Description__c) + '</p>';
+      html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Immediate Action Number: </b>' + safeString(ia.Immediate_Action_Number__c) + '</p>';
+      html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Immediate Action Description: </b>' + safeString(ia.Action_Description__c) + '</p>';
       html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Type: </b>' + safeString(ia.Type__c) + '</p>';
       html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Owner: </b>' + safeString(ia.Owner.Name) + '</p>';
-      html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>State: </b>' + (ia.CompSuite__State__r != null ? safeString(ia.CompSuite__State__r.Name) : '') + '</p>';
+      html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Immediate Action Status: </b>' + (ia.CompSuite__State__r != null ? safeString(ia.CompSuite__State__r.Name) : '') + '</p>';
       html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Planned Due Date: </b>' + formatAnswer('DATE', null, ia.Planned_Due_Date__c, null, false) + '</p>';
       html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Effective Completion Date: </b>' + formatAnswer('DATE', null, ia.Effective_Completion_Date__c, null, false) + '</p>';
       html += '</div>';
@@ -472,13 +480,17 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
     html += '</div>';
     html += '</div>';
 
-    // Each CAPA Plan in its own container
-    for (CAPAPlanWrapper cpWrapper : capaPlanWrappers) {
+    // Each CAPA Plan in its own container with spacing between
+    for (Integer i = 0; i < capaPlanWrappers.size(); i++) {
+      CAPAPlanWrapper cpWrapper = capaPlanWrappers[i];
+      if (i > 0) {
+        html += '<br/>';
+      }
       html += '<div style="width:100%;display:table;table-layout:fixed;">';
       html += '<div style="padding:4px;border:1px solid black;vertical-align:top;display:table-cell;width:100%;">';
       html += '<div style="padding:10px 6px 6px 10px; font-size: ' + FONT_SIZE + ';">';
       html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>CAPA Plan Number: </b>' + safeString(cpWrapper.capaPlan.Name) + '</p>';
-      html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>State: </b>' + (cpWrapper.capaPlan.CompSuite__State__r != null ? safeString(cpWrapper.capaPlan.CompSuite__State__r.Name) : '') + '</p>';
+      html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>CAPA Plan Status: </b>' + (cpWrapper.capaPlan.CompSuite__State__r != null ? safeString(cpWrapper.capaPlan.CompSuite__State__r.Name) : '') + '</p>';
 
       // Nested CAPA records
       if (!cpWrapper.capaRecords.isEmpty()) {
@@ -487,9 +499,10 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
 
         for (CompSuite__CAPA__c capa : cpWrapper.capaRecords) {
           html += '<div style="padding:5px; border:1px solid #ddd; font-size: ' + FONT_SIZE + ';">';
+          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>CAPA Number: </b>' + safeString(capa.Name) + '</p>';
           html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Description: </b>' + safeString(capa.CompSuite__Action_Plan_Description__c) + '</p>';
           html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Owner: </b>' + safeString(capa.Owner.Name) + '</p>';
-          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>State: </b>' + (capa.CompSuite__State__r != null ? safeString(capa.CompSuite__State__r.Name) : '') + '</p>';
+          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>CAPA Status: </b>' + (capa.CompSuite__State__r != null ? safeString(capa.CompSuite__State__r.Name) : '') + '</p>';
           html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Initial Due Date: </b>' + formatAnswer('DATE', null, capa.CompSuite__Due_Date__c, null, false) + '</p>';
           html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Due Date Extension: </b>' + formatAnswer('DATE', null, capa.Extended_Due_Date__c, null, false) + '</p>';
           html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Completion Date: </b>' + formatAnswer('DATE', null, capa.Completion_Date__c, null, false) + '</p>';

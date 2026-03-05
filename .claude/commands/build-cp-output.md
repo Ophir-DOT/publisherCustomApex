@@ -72,6 +72,10 @@ Ask the user:
 - **What is the primary Salesforce object** you want to display? (e.g., Protocol Execution, Audit, Finding/Observation, Custom Object)
 - **What record ID will be passed** to this output? (Usually Audit ID or Protocol Execution ID)
 
+### Question Set 1b: Custom Input
+Ask the user:
+- **Will the class need a Custom Input value?** The Content Publisher template section has a **Custom Input** field that passes a string to the `input` parameter in `getHTML(Id recordId, string input)` and `getJSON(Id recordId, string input)`. This can be used to pass any configuration value, such as a Visualforce page name, a parameter string, or any other identifier the implementation needs.
+
 ### Question Set 2: Related Records
 Based on the primary object, ask:
 - **Do you need to display related records?** If yes, which relationships?
@@ -736,7 +740,10 @@ After creating the Apex class, also create the `-meta.xml` file:
 
 Remind the user:
 1. Deploy using: `sf project deploy start --source-dir force-app`
-2. Configure in Content Publisher template settings
+2. Configure in Content Publisher template settings:
+   - Set the **Implementation Class** to the new Apex class name
+   - Set the **Custom Type** (HTML or JSON)
+   - If needed, set the **Custom Input** field to pass a value to the class (e.g., a VF page name or configuration string)
 3. Test with actual record IDs in the org
 
 ## Reference Examples
@@ -754,6 +761,7 @@ Before generating code, verify you have gathered:
 ### Data Requirements
 - [ ] Primary object API name
 - [ ] Record ID type being passed (Audit ID, Protocol Execution ID, etc.)
+- [ ] Custom Input value needed? (e.g., VF page name, configuration string, or none)
 - [ ] All fields needed from primary object with labels
 - [ ] Related objects and relationship type (direct lookup vs Relation4)
 - [ ] All fields needed from each related object with labels

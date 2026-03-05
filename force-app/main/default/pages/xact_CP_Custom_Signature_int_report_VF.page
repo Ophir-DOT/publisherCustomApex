@@ -1,0 +1,42 @@
+<apex:page controller="xact_CP_Custom_Signature_int_report_Ctrl">
+    <head>
+        <style>
+            @page {
+                size: {!pageSize};
+            }
+        </style>
+    </head>
+    <body>
+        <div style="font-family: 'TT Norms Pro', Aptos, Arial, Helvetica, sans-serif; font-size: 10pt;">
+            <div style="width: 90%; text-align: center; margin-top: 20px; margin-left: 5%;">
+                <h2>Signatory Table</h2>
+            </div>
+
+            <table style="border: 1px solid black; border-collapse: collapse; width: 90%; text-align: center; margin-top: 20px;" align="center">
+                <tr style="background-color: #000000; color: white;">
+                    <th style="border: 1px solid black; text-align: center; padding: 6px 10px;">Action Name</th>
+                    <th style="border: 1px solid black; text-align: center; padding: 6px 10px;">User Name</th>
+                    <th style="border: 1px solid black; text-align: center; padding: 6px 10px;">Title</th>
+                    <th style="border: 1px solid black; text-align: center; padding: 6px 10px;">Signature Date</th>
+                </tr>
+
+                <apex:repeat value="{!signatureObjectList}" var="transition">
+                    <tr style="border: 1px solid black;">
+                        <td style="border: 1px solid black; text-align:center;font-size: small;">
+                            <apex:outputText value="{!transition.ActionName}" />
+                        </td>
+                        <td style="border: 1px solid black; text-align: center;">
+                            <apex:outputText value="{!transition.UserName}" />
+                        </td>
+                        <td style="border: 1px solid black; text-align: center;">
+                            <apex:outputText value="{!transition.UserTitle}" />
+                        </td>
+                        <td style="border: 1px solid black; text-align: center;">
+                            <apex:outputText value="{!transition.formattedDate}" />
+                        </td>
+                    </tr>
+                </apex:repeat>
+            </table>
+        </div>
+    </body>
+</apex:page>

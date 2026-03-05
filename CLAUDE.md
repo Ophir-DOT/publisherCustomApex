@@ -63,10 +63,19 @@ sf apex run test --code-coverage --result-format human
 - Wrapper classes are nested within the main class
 - HTML output uses inline styles for PDF compatibility (no external CSS)
 
+### Custom Input
+
+Content Publisher template sections support a **Custom Input** field that passes a string value to the Apex implementation class via the `input` parameter in `getHTML(Id recordId, string input)` and `getJSON(Id recordId, string input)`.
+
+This can be used to pass any configuration or reference to the class, such as a Visualforce page name, a parameter string, or any other identifier the implementation needs.
+
+Example: `xact_CP_Custom_Signature_sup_report` uses Custom Input `xact_CP_Custom_Signature_sup_report_VF` to reference a Visualforce page for rendering a signature table.
+
 ## Adding New Custom Outputs
 
 1. Create a new class implementing `CompSuite.CP_DynamicContentGenerator`
 2. Query the Protocol Execution and related Execution Elements
 3. Process each element based on its RecordType
 4. Generate HTML/JSON output
-5. Deploy and configure in Content Publisher template
+5. If needed, configure the **Custom Input** field in the template section to pass additional data to the class
+6. Deploy and configure in Content Publisher template
