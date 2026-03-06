@@ -75,7 +75,8 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
     List<CompSuite__Observation__c> lstFinding = queryFindings(strAuditId);
 
     if (lstFinding.isEmpty()) {
-      return strHTMLData;
+      return '<div style="font-family: ' + FONT_FAMILY + '; font-size: ' + FONT_SIZE + '; width:100%;">'
+        + '<p>No noted findings</p></div>';
     }
 
     // Collect Finding IDs for subsequent queries
