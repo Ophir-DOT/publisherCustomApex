@@ -92,7 +92,10 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
 
     queryRelations(findingIds, findingToNCIds, findingToIAIds, findingToCAPAPlanIds, allNCIds, allIAIds, allCAPAPlanIds);
 
-    // Query 3: Get NC (Deviation) records
+    // Query 3a: Also get NCs directly linked via Xact_Finding__c lookup and merge into maps
+    queryDirectNCs(findingIds, findingToNCIds, allNCIds);
+
+    // Query 3b: Get NC (Deviation) records
     Map<Id, CompSuite__Deviation__c> ncMap = queryNCRecords(allNCIds);
 
     // Query 4: Get Immediate Action records
@@ -184,6 +187,24 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
         addToSetMap(findingToCAPAPlanIds, findingId, destId);
         allCAPAPlanIds.add(destId);
       }
+    }
+  }
+
+  private void queryDirectNCs(
+    Set<Id> findingIds,
+    Map<Id, Set<Id>> findingToNCIds,
+    Set<Id> allNCIds
+  ) {
+    List<CompSuite__Deviation__c> directNCs = [
+      SELECT Id, Xact_Finding__c
+      FROM CompSuite__Deviation__c
+      WHERE Xact_Finding__c IN :findingIds
+      WITH SECURITY_ENFORCED
+    ];
+
+    for (CompSuite__Deviation__c nc : directNCs) {
+      addToSetMap(findingToNCIds, nc.Xact_Finding__c, nc.Id);
+      allNCIds.add(nc.Id);
     }
   }
 
