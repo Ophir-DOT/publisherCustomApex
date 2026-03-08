@@ -384,9 +384,13 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
     html += '<div style="padding:4px;border:1px solid black;vertical-align:top;display:table-cell;width:100%;">';
     html += '<div style="padding:10px 6px 6px 10px;">';
     html += '<p style="margin:2px 0;"><b>Finding Number: </b>' + safeString(wrapper.finding.Finding_ID__c) + '</p>';
+    html += '<br/>';
     html += '<p style="margin:2px 0;"><b>Finding Description: </b>' + safeString(wrapper.finding.CompSuite__Observation_Description__c) + '</p>';
+    html += '<br/>';
     html += '<p style="margin:2px 0;"><b>Finding Classification: </b>' + safeString(wrapper.finding.CompSuite__Observation_Class__c) + '</p>';
+    html += '<br/>';
     html += '<p style="margin:2px 0;"><b>Finding Status: </b>' + (wrapper.finding.CompSuite__State__r != null ? safeString(wrapper.finding.CompSuite__State__r.Name) : '') + '</p>';
+    html += '<br/>';
     html += '<p style="margin:2px 0;"><b>Auditee Response: </b>' + safeString(wrapper.finding.Auditee_Response__c) + '</p>';
     html += '</div>';
     html += '</div>';
@@ -407,10 +411,10 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
     html += '<td style="width:30px;"></td>'; // Indent spacer
     html += '<td style="font-size: ' + FONT_SIZE + ';">';
 
-    // NC header
+    // Section header
     html += '<div style="width:100%;display:table;table-layout:fixed;">';
     html += '<div style="border:1px solid black; margin-bottom:10px; page-break-inside:avoid;">';
-    html += '<div style="' + SUBSECTION_HEADER_STYLE + '">NC (Non-Conformance)</div>';
+    html += '<div style="' + SUBSECTION_HEADER_STYLE + '">Related Non-Conformity(ies)</div>';
     html += '</div>';
     html += '</div>';
 
@@ -451,7 +455,7 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
     // Section header
     html += '<div style="width:100%;display:table;table-layout:fixed;">';
     html += '<div style="border:1px solid black; margin-bottom:10px; page-break-inside:avoid;">';
-    html += '<div style="' + SUBSECTION_HEADER_STYLE + '">Immediate Actions</div>';
+    html += '<div style="' + SUBSECTION_HEADER_STYLE + '">Related Immediate Actions</div>';
     html += '</div>';
     html += '</div>';
 
@@ -465,11 +469,17 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
       html += '<div style="padding:4px;border:1px solid black;vertical-align:top;display:table-cell;width:100%;">';
       html += '<div style="padding:10px 6px 6px 10px; font-size: ' + FONT_SIZE + ';">';
       html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Immediate Action Number: </b>' + safeString(ia.Immediate_Action_Number__c) + '</p>';
+      html += '<br/>';
       html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Immediate Action Description: </b>' + safeString(ia.Action_Description__c) + '</p>';
+      html += '<br/>';
       html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Type: </b>' + safeString(ia.Type__c) + '</p>';
+      html += '<br/>';
       html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Owner: </b>' + safeString(ia.Owner.Name) + '</p>';
-      html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Immediate Action Status: </b>' + (ia.CompSuite__State__r != null ? safeString(ia.CompSuite__State__r.Name) : '') + '</p>';
+      html += '<br/>';
+      html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Status: </b>' + (ia.CompSuite__State__r != null ? safeString(ia.CompSuite__State__r.Name) : '') + '</p>';
+      html += '<br/>';
       html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Planned Due Date: </b>' + formatAnswer('DATE', null, ia.Planned_Due_Date__c, null, false) + '</p>';
+      html += '<br/>';
       html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Effective Completion Date: </b>' + formatAnswer('DATE', null, ia.Effective_Completion_Date__c, null, false) + '</p>';
       html += '</div>';
       html += '</div>';
@@ -498,7 +508,7 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
     // CAPA Plans header
     html += '<div style="width:100%;display:table;table-layout:fixed;">';
     html += '<div style="border:1px solid black; margin-bottom:10px; page-break-inside:avoid;">';
-    html += '<div style="' + SUBSECTION_HEADER_STYLE + '">CAPA Plans</div>';
+    html += '<div style="' + SUBSECTION_HEADER_STYLE + '">Related CAPA Plans</div>';
     html += '</div>';
     html += '</div>';
 
@@ -512,6 +522,7 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
       html += '<div style="padding:4px;border:1px solid black;vertical-align:top;display:table-cell;width:100%;">';
       html += '<div style="padding:10px 6px 6px 10px; font-size: ' + FONT_SIZE + ';">';
       html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>CAPA Plan Number: </b>' + safeString(cpWrapper.capaPlan.Name) + '</p>';
+      html += '<br/>';
       html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>CAPA Plan Status: </b>' + (cpWrapper.capaPlan.CompSuite__State__r != null ? safeString(cpWrapper.capaPlan.CompSuite__State__r.Name) : '') + '</p>';
 
       // Nested CAPA records
@@ -522,12 +533,18 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
         for (CompSuite__CAPA__c capa : cpWrapper.capaRecords) {
           html += '<div style="padding:5px; border:1px solid #ddd; font-size: ' + FONT_SIZE + ';">';
           html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>CAPA Number: </b>' + safeString(capa.Name) + '</p>';
-          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Description: </b>' + safeString(capa.CompSuite__Action_Plan_Description__c) + '</p>';
-          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Owner: </b>' + safeString(capa.Owner.Name) + '</p>';
-          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>CAPA Status: </b>' + (capa.CompSuite__State__r != null ? safeString(capa.CompSuite__State__r.Name) : '') + '</p>';
-          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Initial Due Date: </b>' + formatAnswer('DATE', null, capa.CompSuite__Due_Date__c, null, false) + '</p>';
-          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Due Date Extension: </b>' + formatAnswer('DATE', null, capa.Extended_Due_Date__c, null, false) + '</p>';
-          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Completion Date: </b>' + formatAnswer('DATE', null, capa.Completion_Date__c, null, false) + '</p>';
+          html += '<br/>';
+          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';">Description: ' + safeString(capa.CompSuite__Action_Plan_Description__c) + '</p>';
+          html += '<br/>';
+          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';">Owner: ' + safeString(capa.Owner.Name) + '</p>';
+          html += '<br/>';
+          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';">Status: ' + (capa.CompSuite__State__r != null ? safeString(capa.CompSuite__State__r.Name) : '') + '</p>';
+          html += '<br/>';
+          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';">Initial Due Date: ' + formatAnswer('DATE', null, capa.CompSuite__Due_Date__c, null, false) + '</p>';
+          html += '<br/>';
+          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';">Due Date Extension: ' + formatAnswer('DATE', null, capa.Extended_Due_Date__c, null, false) + '</p>';
+          html += '<br/>';
+          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';">Completion Date: ' + formatAnswer('DATE', null, capa.Completion_Date__c, null, false) + '</p>';
           html += '</div>';
           html += '<br/>';
         }
