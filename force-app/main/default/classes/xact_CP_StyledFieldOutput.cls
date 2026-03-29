@@ -8,7 +8,7 @@
  **/
 global with sharing class xact_CP_StyledFieldOutput implements CompSuite.CP_DynamicContentGenerator {
 
-    private static final String FONT_FAMILY = '\'TT Norms Pro\', Aptos, Arial, Helvetica, sans-serif';
+    private static final String FONT_FAMILY = '\'TT Norms Pro\', \'Microsoft YaHei\', Aptos, Arial, Helvetica, sans-serif';
     private static final String FONT_SIZE = '10pt';
     private static final String RTA_IMG_TITLE = 'RichTextAreaImg';
 

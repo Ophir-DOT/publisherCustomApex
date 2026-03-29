@@ -24,7 +24,7 @@ global with sharing class xact_CP_RelatedFindingsOutput implements CompSuite.CP_
 
     // Query Observations directly using the Audit ID passed as recordId
     List<CompSuite__Observation__c> lstFinding = [
-      SELECT Finding_ID__c, CompSuite__Observation_Date__c, CompSuite__Observation_Description__c
+      SELECT Finding_ID__c, CompSuite__Observation_Date__c, CompSuite__Observation_Description__c, CompSuite__Observation_Class__c
       FROM CompSuite__Observation__c
       WHERE CompSuite__Audit__c = :strAuditId
       WITH SECURITY_ENFORCED
@@ -33,7 +33,13 @@ global with sharing class xact_CP_RelatedFindingsOutput implements CompSuite.CP_
 
     // Findings sections
     strHTMLData += '<div style="font-family: \'TT Norms Pro\', Aptos, Arial, Helvetica, sans-serif; font-size: 10pt;align-content: center;width:100%;">';
+    Boolean isFirst = true;
     for (CompSuite__Observation__c obs : lstFinding) {
+      if (!isFirst) {
+        strHTMLData += '<br style="page-break-before: always">';
+      }
+      isFirst = false;
+      
       strHTMLData += '<div style="font-family: \'TT Norms Pro\', Aptos, Arial, Helvetica, sans-serif; font-size: 10pt;align-content: center;width:100%;">';
       strHTMLData += '<div style="width:100%;display:table;table-layout:fixed;">';
       strHTMLData += '    <div style="border:1px solid black; margin-bottom:10px; page-break-inside:avoid;">';
@@ -44,8 +50,9 @@ global with sharing class xact_CP_RelatedFindingsOutput implements CompSuite.CP_
       strHTMLData += '<div style="width:100%;display:table;table-layout:fixed;">';
       strHTMLData += '  <div style="padding:4px;border:1px solid black;vertical-align: top;display:table-cell;width:100%;">';
       strHTMLData += '      <div style="padding:10px 6px 6px 10px;">';
-      strHTMLData += '        <p style="margin:2px 0;"><b>Finding Name: </b>' + obs.Finding_ID__c + '</p>';
+      strHTMLData += '        <p style="margin:2px 0;"><b>Finding Number: </b>' + obs.Finding_ID__c + '</p>';
       strHTMLData += '        <p style="margin:2px 0;"><b>Finding Description: </b>' + obs.CompSuite__Observation_Description__c + '</p>';
+      strHTMLData += '        <p style="margin:2px 0;"><b>Finding Classification: </b>' + (obs.CompSuite__Observation_Class__c != null ? obs.CompSuite__Observation_Class__c : '') + '</p>';
       strHTMLData += '        <p style="margin:2px 0;"><b>Finding Date: </b>' + formatAnswer('DATE', null, obs.CompSuite__Observation_Date__c, null, false) + '</p>';
       strHTMLData += '      </div>';
       strHTMLData += '  </div>';

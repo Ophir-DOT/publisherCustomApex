@@ -9,7 +9,7 @@
 global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompSuite.CP_DynamicContentGenerator {
 
   // Constants for HTML styling
-  private static final String FONT_FAMILY = '\'TT Norms Pro\', Aptos, Arial, Helvetica, sans-serif';
+  private static final String FONT_FAMILY = '\'TT Norms Pro\', \'Arial Unicode MS\', \'Aptos\', Arial, Helvetica, sans-serif';
   private static final String FONT_SIZE = '10pt';
   private static final String SECTION_HEADER_STYLE = 'background-color:#000000; color:white; font-weight:bold; padding:6px 10px;';
   private static final String SUBSECTION_HEADER_STYLE = 'background-color:#000000; color:white; font-weight:bold; padding:4px 10px; font-size:9pt;';
@@ -26,15 +26,17 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
     public List<CompSuite__Deviation__c> ncRecords { get; set; }
     public List<CompSuite__Immediate_Action__c> iaRecords { get; set; }
     public List<CAPAPlanWrapper> capaPlanRecords { get; set; }
+    public List<CompSuite__CAPA__c> otherCAPARecords { get; set; }
 
     public FindingWrapper() {
       this.ncRecords = new List<CompSuite__Deviation__c>();
       this.iaRecords = new List<CompSuite__Immediate_Action__c>();
       this.capaPlanRecords = new List<CAPAPlanWrapper>();
+      this.otherCAPARecords = new List<CompSuite__CAPA__c>();
     }
 
     public Boolean hasRelatedRecords() {
-      return !ncRecords.isEmpty() || !iaRecords.isEmpty() || !capaPlanRecords.isEmpty();
+      return !ncRecords.isEmpty() || !iaRecords.isEmpty() || !capaPlanRecords.isEmpty() || !otherCAPARecords.isEmpty();
     }
   }
 
@@ -86,11 +88,13 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
     Map<Id, Set<Id>> findingToNCIds = new Map<Id, Set<Id>>();
     Map<Id, Set<Id>> findingToIAIds = new Map<Id, Set<Id>>();
     Map<Id, Set<Id>> findingToCAPAPlanIds = new Map<Id, Set<Id>>();
+    Map<Id, Set<Id>> findingToCAPAIds = new Map<Id, Set<Id>>();
     Set<Id> allNCIds = new Set<Id>();
     Set<Id> allIAIds = new Set<Id>();
     Set<Id> allCAPAPlanIds = new Set<Id>();
+    Set<Id> allCAPAIds = new Set<Id>();
 
-    queryRelations(findingIds, findingToNCIds, findingToIAIds, findingToCAPAPlanIds, allNCIds, allIAIds, allCAPAPlanIds);
+    queryRelations(findingIds, findingToNCIds, findingToIAIds, findingToCAPAPlanIds, findingToCAPAIds, allNCIds, allIAIds, allCAPAPlanIds, allCAPAIds);
 
     // Query 3a: Also get NCs directly linked via Xact_Finding__c lookup and merge into maps
     queryDirectNCs(findingIds, findingToNCIds, allNCIds);
@@ -107,16 +111,21 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
     // Query 6: Get CAPA records (children of CAPA Plans)
     Map<Id, List<CompSuite__CAPA__c>> capaPlanToCapasMap = queryCAPARecords(allCAPAPlanIds);
 
+    // Query 7: Get Other CAPA records (directly linked via Relation4)
+    Map<Id, CompSuite__CAPA__c> otherCAPAMap = queryOtherCAPAs(allCAPAIds);
+
     // Build wrapper objects
     List<FindingWrapper> findingWrappers = buildFindingWrappers(
       lstFinding,
       findingToNCIds,
       findingToIAIds,
       findingToCAPAPlanIds,
+      findingToCAPAIds,
       ncMap,
       iaMap,
       capaPlanMap,
-      capaPlanToCapasMap
+      capaPlanToCapasMap,
+      otherCAPAMap
     );
 
     // Generate HTML output
@@ -146,9 +155,11 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
     Map<Id, Set<Id>> findingToNCIds,
     Map<Id, Set<Id>> findingToIAIds,
     Map<Id, Set<Id>> findingToCAPAPlanIds,
+    Map<Id, Set<Id>> findingToCAPAIds,
     Set<Id> allNCIds,
     Set<Id> allIAIds,
-    Set<Id> allCAPAPlanIds
+    Set<Id> allCAPAPlanIds,
+    Set<Id> allCAPAIds
   ) {
     // Convert Set<Id> to Set<String> for text field comparison
     Set<String> findingIdStrings = new Set<String>();
@@ -186,6 +197,9 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
       } else if (rel.CompSuite__Destination_Object_API_Name__c == 'CompSuite__CAPA_Plan__c') {
         addToSetMap(findingToCAPAPlanIds, findingId, destId);
         allCAPAPlanIds.add(destId);
+      } else if (rel.CompSuite__Destination_Object_API_Name__c == 'CompSuite__CAPA__c') {
+        addToSetMap(findingToCAPAIds, findingId, destId);
+        allCAPAIds.add(destId);
       }
     }
   }
@@ -245,7 +259,7 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
 
     return new Map<Id, CompSuite__CAPA_Plan__c>(
       [
-        SELECT Id, Name, CompSuite__State__r.Name
+        SELECT Id, Name, CompSuite__State__r.Name, CompSuite__CAPA_Plan_Number__c
         FROM CompSuite__CAPA_Plan__c
         WHERE Id IN :capaPlanIds
         WITH SECURITY_ENFORCED
@@ -261,7 +275,7 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
     }
 
     List<CompSuite__CAPA__c> capaList = [
-      SELECT Id, Name, CAPA_Plan__c, CompSuite__Action_Plan_Description__c, Owner.Name, CompSuite__State__r.Name, CompSuite__Due_Date__c, Extended_Due_Date__c, Completion_Date__c
+      SELECT Id, Name, CAPA_Number__c, CAPA_Plan__c, CompSuite__Action_Plan_Description__c, Owner.Name, CompSuite__State__r.Name, CompSuite__Due_Date__c, Extended_Due_Date__c, Completion_Date__c
       FROM CompSuite__CAPA__c
       WHERE CAPA_Plan__c IN :capaPlanIds
       WITH SECURITY_ENFORCED
@@ -277,6 +291,21 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
     return capaPlanToCapasMap;
   }
 
+  private Map<Id, CompSuite__CAPA__c> queryOtherCAPAs(Set<Id> capaIds) {
+    if (capaIds.isEmpty()) {
+      return new Map<Id, CompSuite__CAPA__c>();
+    }
+
+    return new Map<Id, CompSuite__CAPA__c>(
+      [
+        SELECT Id, Name, CAPA_Number__c, CAPA_Plan__c, CompSuite__Action_Plan_Description__c, Owner.Name, CompSuite__State__r.Name, CompSuite__Due_Date__c, Extended_Due_Date__c, Completion_Date__c
+        FROM CompSuite__CAPA__c
+        WHERE Id IN :capaIds
+        WITH SECURITY_ENFORCED
+      ]
+    );
+  }
+
   // ============================================
   // Wrapper Building Methods
   // ============================================
@@ -286,10 +315,12 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
     Map<Id, Set<Id>> findingToNCIds,
     Map<Id, Set<Id>> findingToIAIds,
     Map<Id, Set<Id>> findingToCAPAPlanIds,
+    Map<Id, Set<Id>> findingToCAPAIds,
     Map<Id, CompSuite__Deviation__c> ncMap,
     Map<Id, CompSuite__Immediate_Action__c> iaMap,
     Map<Id, CompSuite__CAPA_Plan__c> capaPlanMap,
-    Map<Id, List<CompSuite__CAPA__c>> capaPlanToCapasMap
+    Map<Id, List<CompSuite__CAPA__c>> capaPlanToCapasMap,
+    Map<Id, CompSuite__CAPA__c> otherCAPAMap
   ) {
     List<FindingWrapper> wrappers = new List<FindingWrapper>();
 
@@ -328,6 +359,15 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
         }
       }
 
+      // Add Other CAPA records (directly linked via Relation4)
+      if (findingToCAPAIds.containsKey(finding.Id)) {
+        for (Id capaId : findingToCAPAIds.get(finding.Id)) {
+          if (otherCAPAMap.containsKey(capaId)) {
+            wrapper.otherCAPARecords.add(otherCAPAMap.get(capaId));
+          }
+        }
+      }
+
       wrappers.add(wrapper);
     }
 
@@ -345,7 +385,7 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
     Boolean isFirst = true;
     for (FindingWrapper wrapper : wrappers) {
       if (!isFirst) {
-        html += '<br/>';
+        html += '<br style="page-break-before: always">';
       }
       isFirst = false;
       html += buildFindingHTML(wrapper);
@@ -360,9 +400,9 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
       if (!wrapper.capaPlanRecords.isEmpty()) {
         html += buildCAPAPlanSection(wrapper.capaPlanRecords);
       }
-
-      // Add spacing between findings
-      html += '<div style="margin-bottom:20px;"></div>';
+      if (!wrapper.otherCAPARecords.isEmpty()) {
+        html += buildOtherCAPASection(wrapper.otherCAPARecords);
+      }
     }
 
     html += '</div>';
@@ -521,35 +561,88 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
       html += '<div style="width:100%;display:table;table-layout:fixed;">';
       html += '<div style="padding:4px;border:1px solid black;vertical-align:top;display:table-cell;width:100%;">';
       html += '<div style="padding:10px 6px 6px 10px; font-size: ' + FONT_SIZE + ';">';
-      html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>CAPA Plan Number: </b>' + safeString(cpWrapper.capaPlan.Name) + '</p>';
+      html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>CAPA Plan Number: </b>' + safeString(cpWrapper.capaPlan.CompSuite__CAPA_Plan_Number__c) + '</p>';
       html += '<br/>';
       html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>CAPA Plan Status: </b>' + (cpWrapper.capaPlan.CompSuite__State__r != null ? safeString(cpWrapper.capaPlan.CompSuite__State__r.Name) : '') + '</p>';
 
       // Nested CAPA records
       if (!cpWrapper.capaRecords.isEmpty()) {
-        html += '<br/>';
-        html += '<p style="margin:2px 0; font-weight:bold; font-size: ' + FONT_SIZE + ';">CAPA Records:</p>';
+        html += '<p style="margin:15px 0 5px 0; font-weight:bold; font-size: ' + FONT_SIZE + ';">CAPAs included in the plan:</p>';
 
         for (CompSuite__CAPA__c capa : cpWrapper.capaRecords) {
-          html += '<div style="padding:5px; border:1px solid #ddd; font-size: ' + FONT_SIZE + ';">';
-          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>CAPA Number: </b>' + safeString(capa.Name) + '</p>';
+          html += '<div style="margin-left:20px; padding:5px; border:1px solid #ddd; font-size: ' + FONT_SIZE + ';">';
+          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>CAPA Number: </b>' + safeString(capa.CAPA_Number__c) + '</p>';
           html += '<br/>';
-          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';">Description: ' + safeString(capa.CompSuite__Action_Plan_Description__c) + '</p>';
+          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Description: </b>' + safeString(capa.CompSuite__Action_Plan_Description__c) + '</p>';
           html += '<br/>';
-          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';">Owner: ' + safeString(capa.Owner.Name) + '</p>';
+          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Owner: </b>' + safeString(capa.Owner.Name) + '</p>';
           html += '<br/>';
-          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';">Status: ' + (capa.CompSuite__State__r != null ? safeString(capa.CompSuite__State__r.Name) : '') + '</p>';
+          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Status: </b>' + (capa.CompSuite__State__r != null ? safeString(capa.CompSuite__State__r.Name) : '') + '</p>';
           html += '<br/>';
-          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';">Initial Due Date: ' + formatAnswer('DATE', null, capa.CompSuite__Due_Date__c, null, false) + '</p>';
+          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Initial Due Date: </b>' + formatAnswer('DATE', null, capa.CompSuite__Due_Date__c, null, false) + '</p>';
           html += '<br/>';
-          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';">Due Date Extension: ' + formatAnswer('DATE', null, capa.Extended_Due_Date__c, null, false) + '</p>';
+          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Due Date Extension: </b>' + formatAnswer('DATE', null, capa.Extended_Due_Date__c, null, false) + '</p>';
           html += '<br/>';
-          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';">Completion Date: ' + formatAnswer('DATE', null, capa.Completion_Date__c, null, false) + '</p>';
+          html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Completion Date: </b>' + formatAnswer('DATE', null, capa.Completion_Date__c, null, false) + '</p>';
           html += '</div>';
           html += '<br/>';
         }
       }
 
+      html += '</div>';
+      html += '</div>';
+      html += '</div>';
+    }
+
+    html += '</td>';
+    html += '</tr>';
+    html += '</table>';
+
+    return html;
+  }
+
+  private String buildOtherCAPASection(List<CompSuite__CAPA__c> capaRecords) {
+    String html = '';
+
+    // Spacing before section
+    html += '<br/>';
+
+    // Table-based indentation: empty cell + content cell
+    html += '<table style="width:100%; border-collapse:collapse; font-family: ' + FONT_FAMILY + '; font-size: ' + FONT_SIZE + ';">';
+    html += '<tr>';
+    html += '<td style="width:30px;"></td>'; // Indent spacer
+    html += '<td style="font-size: ' + FONT_SIZE + ';">';
+
+    // Section header
+    html += '<div style="width:100%;display:table;table-layout:fixed;">';
+    html += '<div style="border:1px solid black; margin-bottom:10px; page-break-inside:avoid;">';
+    html += '<div style="' + SUBSECTION_HEADER_STYLE + '">Other Related CAPAs</div>';
+    html += '</div>';
+    html += '</div>';
+
+    // Each CAPA record in its own container with spacing between
+    for (Integer i = 0; i < capaRecords.size(); i++) {
+      CompSuite__CAPA__c capa = capaRecords[i];
+      if (i > 0) {
+        html += '<br/>';
+      }
+
+      html += '<div style="width:100%;display:table;table-layout:fixed;">';
+      html += '<div style="padding:4px;border:1px solid black;vertical-align:top;display:table-cell;width:100%;">';
+      html += '<div style="padding:10px 6px 6px 10px; font-size: ' + FONT_SIZE + ';">';
+      html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>CAPA Number: </b>' + safeString(capa.CAPA_Number__c) + '</p>';
+      html += '<br/>';
+      html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Description: </b>' + safeString(capa.CompSuite__Action_Plan_Description__c) + '</p>';
+      html += '<br/>';
+      html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Owner: </b>' + safeString(capa.Owner.Name) + '</p>';
+      html += '<br/>';
+      html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Status: </b>' + (capa.CompSuite__State__r != null ? safeString(capa.CompSuite__State__r.Name) : '') + '</p>';
+      html += '<br/>';
+      html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Initial Due Date: </b>' + formatAnswer('DATE', null, capa.CompSuite__Due_Date__c, null, false) + '</p>';
+      html += '<br/>';
+      html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Due Date Extension: </b>' + formatAnswer('DATE', null, capa.Extended_Due_Date__c, null, false) + '</p>';
+      html += '<br/>';
+      html += '<p style="margin:2px 0; font-size: ' + FONT_SIZE + ';"><b>Completion Date: </b>' + formatAnswer('DATE', null, capa.Completion_Date__c, null, false) + '</p>';
       html += '</div>';
       html += '</div>';
       html += '</div>';
@@ -574,7 +667,10 @@ global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompS
   }
 
   private String safeString(String value) {
-    return String.isBlank(value) ? '' : value.escapeHtml4();
+    if (String.isBlank(value)) {
+      return '';
+    }
+    return value.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;');
   }
 
   public String formatAnswer(String pContentType, String pStringAnswer, Date pDateAnswer, Datetime pDateTimeAnswer, Boolean pConvertoAspose) {
