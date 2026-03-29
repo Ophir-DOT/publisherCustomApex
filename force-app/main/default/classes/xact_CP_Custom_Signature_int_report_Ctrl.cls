@@ -1,8 +1,8 @@
 /**
  * @description       : Controller for xact_CP_Custom_Signature_int_report_VF page - shows ALL signatures
  * @author            : Ophir Peleg
- * @last modified on  : 02-11-2026
- * @last modified by  : Claude
+ * @last modified on  : 29-03-2026
+ * @last modified by  : Ophir Peleg
  **/
 public with sharing class xact_CP_Custom_Signature_int_report_Ctrl {
     public List<SignatureObject> signatureObjectList { set; get; }

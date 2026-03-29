@@ -2,8 +2,8 @@
  * @description       : This class is used to generate Protocol Output from Content Publisher with enhanced Width based layout handling
  * @author            : Ophir Peleg
  * @group             :
- * @last modified on  : 12-17-2025
- * @last modified by  : Ceptes
+ * @last modified on  : 29-03-2026
+ * @last modified by  : Ophir Peleg
  **/
 global with sharing class Xact_CP_Advanced_Custom_ProtocolOutput implements CompSuite.CP_DynamicContentGenerator {
   private static final String RT_PE_MULTI_PICKLIST = 'Multi Picklist';

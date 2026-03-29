@@ -3,8 +3,8 @@
  *                      Generates HTML output displaying classic Notes (Note object)
  *                      and Files (Attachments) linked to any Salesforce record.
  * @author            : Ophir Peleg
- * @last modified on  : 02-10-2026
- * @last modified by  : Claude
+ * @last modified on  : 29-03-2026
+ * @last modified by  : Ophir Peleg
  **/
 global with sharing class xact_CP_NotesAndAttachments implements CompSuite.CP_DynamicContentGenerator {
 

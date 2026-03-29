@@ -3,8 +3,8 @@
  *                      The field API name is passed via Custom Input. Designed for textarea/HTML fields
  *                      where existing inline styles need to be overridden with consistent typography.
  * @author            : Ophir Oren
- * @last modified on  : 2026-02-15
- * @last modified by  : Claude
+ * @last modified on  : 29-03-2026
+ * @last modified by  : Ophir Peleg
  **/
 global with sharing class xact_CP_StyledFieldOutput implements CompSuite.CP_DynamicContentGenerator {
 

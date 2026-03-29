@@ -2,8 +2,8 @@
  * @description       : Dynamic class to return CompSuite Package Version
  * @author            : Ophir Peleg
  * @group             :
- * @last modified on  : 02-05-2026
- * @last modified by  : Claude
+ * @last modified on  : 29-03-2026
+ * @last modified by  : Ophir Peleg
  **/
 global with sharing class xact_CP_PackageVersion implements CompSuite.CP_DynamicContentGenerator {
     private static final String FONT_FAMILY = '\'TT Norms Pro\', Aptos, Arial, Helvetica, sans-serif';

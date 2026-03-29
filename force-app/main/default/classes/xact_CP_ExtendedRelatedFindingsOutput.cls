@@ -3,8 +3,8 @@
  *                      Generates HTML output for Findings with related NC (Deviations),
  *                      Immediate Actions, and CAPA Plans with nested CAPA records.
  * @author            : Ophir Peleg
- * @last modified on  : 02-04-2026
- * @last modified by  : Claude
+ * @last modified on  : 29-03-2026
+ * @last modified by  : Ophir Peleg
  **/
 global with sharing class xact_CP_ExtendedRelatedFindingsOutput implements CompSuite.CP_DynamicContentGenerator {
 
