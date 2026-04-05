@@ -12,4 +12,5 @@
     <testClassName>xact_CP_SigSupReportCtrl_Test</testClassName>
     <testClassName>xact_CP_StyledFieldOutput_Test</testClassName>
     <testClassName>xact_CP_StyledMultiPicklistOutput_Test</testClassName>
+    <testClassName>xact_CP_UserDateTime_Test</testClassName>
 </ApexTestSuite>

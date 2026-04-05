@@ -26,6 +26,8 @@
         <members>xact_CP_StyledMultiPicklistOutput</members>
         <members>xact_CP_StyledMultiPicklistOutput_Test</members>
         <members>xact_CP_TestDataFactory</members>
+        <members>xact_CP_UserDateTime</members>
+        <members>xact_CP_UserDateTime_Test</members>
         <name>ApexClass</name>
     </types>
     <types>
@@ -40,10 +42,6 @@
     <types>
         <members>xact_CP_AllTests</members>
         <name>ApexTestSuite</name>
-    </types>
-    <types>
-        <members>CompSuite__Audit__c.xact_publisherTemplateFooter__c</members>
-        <name>CustomField</name>
     </types>
     <version>62.0</version>
 </Package>

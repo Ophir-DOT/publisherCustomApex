@@ -33,6 +33,10 @@ global with sharing class xact_CP_RelatedFindingsOutput implements CompSuite.CP_
 
     // Findings sections
     strHTMLData += '<div style="font-family: \'TT Norms Pro\', Aptos, Arial, Helvetica, sans-serif; font-size: 10pt;align-content: center;width:100%;">';
+    if (lstFinding.isEmpty()) {
+      strHTMLData += '<p style="font-family: \'TT Norms Pro\', Aptos, Arial, Helvetica, sans-serif; font-size: 10pt;">No related findings found</p>';
+    }
+
     Boolean isFirst = true;
     for (CompSuite__Observation__c obs : lstFinding) {
       if (!isFirst) {

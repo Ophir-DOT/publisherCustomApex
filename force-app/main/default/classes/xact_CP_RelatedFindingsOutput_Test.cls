@@ -11,6 +11,7 @@ private class xact_CP_RelatedFindingsOutput_Test {
         Test.stopTest();
 
         System.assertNotEquals(null, html, 'Should not return null');
+        System.assert(html.contains('No related findings found'), 'Should display no findings message');
     }
 
     @isTest
