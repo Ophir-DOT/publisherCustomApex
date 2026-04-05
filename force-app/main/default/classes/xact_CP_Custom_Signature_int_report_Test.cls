@@ -1,9 +1,3 @@
-/**
- * @description       : Test class for xact_CP_Custom_Signature_int_report
- * @author            : Ophir Peleg
- * @last modified on  : 29-03-2026
- * @last modified by  : Ophir Peleg
- **/
 @isTest
 private class xact_CP_Custom_Signature_int_report_Test {
 

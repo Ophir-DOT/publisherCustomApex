@@ -3,8 +3,8 @@
  *                      selected value on its own line. The field API name is passed via Custom Input.
  *                      Applies standardized font styling consistent with xact_CP_StyledFieldOutput.
  * @author            : Ophir Oren
- * @last modified on  : 29-03-2026
- * @last modified by  : Ophir Peleg
+ * @last modified on  : 2026-02-19
+ * @last modified by  : Claude
  **/
 global with sharing class xact_CP_StyledMultiPicklistOutput implements CompSuite.CP_DynamicContentGenerator {
 

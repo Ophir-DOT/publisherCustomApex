@@ -1,9 +1,3 @@
-/**
- * @description       : Test class for Xact_CP_Advanced_Custom_ProtocolOutput
- * @author            : Ophir Peleg
- * @last modified on  : 29-03-2026
- * @last modified by  : Ophir Peleg
- **/
 @isTest
 private class xact_CP_AdvCustomProtoOutput_Test {
 

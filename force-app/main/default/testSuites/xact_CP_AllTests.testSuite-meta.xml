@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ApexTestSuite xmlns="http://soap.sforce.com/2006/04/metadata">
+    <testClassName>xact_CP_AdvCustomProtoOutput_Test</testClassName>
+    <testClassName>xact_CP_Custom_Signature_int_report_Test</testClassName>
+    <testClassName>xact_CP_Custom_Signature_sup_report_Test</testClassName>
+    <testClassName>xact_CP_ExtRelFindingsOutput_Test</testClassName>
+    <testClassName>xact_CP_NotesAndAttachments_Test</testClassName>
     <testClassName>xact_CP_PackageVersion_Test</testClassName>
+    <testClassName>xact_CP_ProtocolExecutionOutput_Test</testClassName>
+    <testClassName>xact_CP_RelatedFindingsOutput_Test</testClassName>
+    <testClassName>xact_CP_SigIntReportCtrl_Test</testClassName>
+    <testClassName>xact_CP_SigSupReportCtrl_Test</testClassName>
     <testClassName>xact_CP_StyledFieldOutput_Test</testClassName>
     <testClassName>xact_CP_StyledMultiPicklistOutput_Test</testClassName>
-    <testClassName>xact_CP_NotesAndAttachments_Test</testClassName>
-    <testClassName>xact_CP_Custom_Signature_sup_report_Test</testClassName>
-    <testClassName>xact_CP_SigSupReportCtrl_Test</testClassName>
-    <testClassName>xact_CP_Custom_Signature_int_report_Test</testClassName>
-    <testClassName>xact_CP_SigIntReportCtrl_Test</testClassName>
-    <testClassName>xact_CP_RelatedFindingsOutput_Test</testClassName>
-    <testClassName>xact_CP_ExtRelFindingsOutput_Test</testClassName>
-    <testClassName>xact_CP_ProtocolExecutionOutput_Test</testClassName>
-    <testClassName>xact_CP_AdvCustomProtoOutput_Test</testClassName>
 </ApexTestSuite>

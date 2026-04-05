@@ -2,8 +2,8 @@
  * @description       : Controller for xact_CP_Custom_Signature_sup_report_VF page with xact styling
  * @author            : Ophir Peleg
  * @group             :
- * @last modified on  : 29-03-2026
- * @last modified by  : Ophir Peleg
+ * @last modified on  : 02-10-2026
+ * @last modified by  : Claude
  **/
 public with sharing class xact_CP_Custom_Signature_sup_report_Ctrl {
     public List<SignatureObject> signatureObjectList { set; get; }

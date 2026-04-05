@@ -1,10 +1,7 @@
 /**
- * @description       : Test data factory for xact Content Publisher custom output classes.
- *                      Provides reusable methods for creating CompSuite managed package test records.
- * @author            : Ophir Peleg
- * @last modified on  : 29-03-2026
- * @last modified by  : Ophir Peleg
- **/
+ * @description Test data factory for xact Content Publisher custom output classes.
+ *              Provides reusable methods for creating CompSuite managed package test records.
+ */
 @isTest
 public class xact_CP_TestDataFactory {
 

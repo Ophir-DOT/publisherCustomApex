@@ -3,8 +3,8 @@
  *                      Receives the Audit ID directly and queries Observations related to that Audit.
  * @author            : Ophir Peleg
  * @group             :
- * @last modified on  : 29-03-2026
- * @last modified by  : Ophir Peleg
+ * @last modified on  : 02-03-2026
+ * @last modified by  : Claude
  **/
 global with sharing class xact_CP_RelatedFindingsOutput implements CompSuite.CP_DynamicContentGenerator {
 

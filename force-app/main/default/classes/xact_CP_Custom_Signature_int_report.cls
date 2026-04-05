@@ -1,8 +1,8 @@
 /**
  * @description       : Content Publisher Dynamic Content Generator for Internal Signature Report
  * @author            : Ophir Peleg
- * @last modified on  : 29-03-2026
- * @last modified by  : Ophir Peleg
+ * @last modified on  : 02-11-2026
+ * @last modified by  : Claude
  **/
 global with sharing class xact_CP_Custom_Signature_int_report implements CompSuite.CP_DynamicContentGenerator {
 
