@@ -217,7 +217,7 @@ private class xact_CP_ProtocolExecutionOutput_Test {
         String html = gen.getHTML(freshAudit.Id, null);
         Test.stopTest();
 
-        System.assertEquals('', html, 'Should return empty when no Protocol Executions');
+        System.assert(html.contains('No related form is found for this audit'), 'Should display no form found message');
     }
 
     @isTest

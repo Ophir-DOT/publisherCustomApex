@@ -1,50 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
-    <classAccesses>
-        <apexClass>xact_CP_Custom_Signature_int_report</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>xact_CP_Custom_Signature_int_report_Ctrl</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>xact_CP_Custom_Signature_sup_report</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>xact_CP_Custom_Signature_sup_report_Ctrl</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>xact_CP_ExtendedRelatedFindingsOutput</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>xact_CP_PackageVersion</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>xact_CP_ProtocolExecutionOutput</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>xact_CP_RelatedFindingsOutput</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>xact_CP_StyledFieldOutput</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>xact_CP_StyledMultiPicklistOutput</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>CompSuite__Audit__c.xact_publisherTemplateFooter__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>xact Custom Publisher Report</label>
     <pageAccesses>

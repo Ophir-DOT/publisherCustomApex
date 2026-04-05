@@ -52,9 +52,9 @@ global with sharing class xact_CP_ProtocolExecutionOutput implements CompSuite.C
       ORDER BY Name
     ];
 
-    // If no Protocol Executions found, return empty string
+    // If no Protocol Executions found, return informational message
     if (proExeList.isEmpty()) {
-      return '';
+      return '<p style="font-family: \'TT Norms Pro\', Aptos, Arial, Helvetica, sans-serif; font-size: 10pt;">No related form is found for this audit</p>';
     }
 
     // Use the first Protocol Execution for header/summary data
