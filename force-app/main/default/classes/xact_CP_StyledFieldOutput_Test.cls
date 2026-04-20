@@ -93,6 +93,71 @@ private class xact_CP_StyledFieldOutput_Test {
     }
 
     @isTest
+    static void testStripTrailing_brTags() {
+        xact_CP_StyledFieldOutput gen = new xact_CP_StyledFieldOutput();
+        String input = '<p>Hello</p><br/>';
+        String result = gen.stripTrailingEmptyElements(input);
+        System.assertEquals('<p>Hello</p>', result, 'Should strip trailing <br/> tags');
+    }
+
+    @isTest
+    static void testStripTrailing_multipleBrTags() {
+        xact_CP_StyledFieldOutput gen = new xact_CP_StyledFieldOutput();
+        String input = '<p>Hello</p><br><br/>';
+        String result = gen.stripTrailingEmptyElements(input);
+        System.assertEquals('<p>Hello</p>', result, 'Should strip multiple trailing <br> tags');
+    }
+
+    @isTest
+    static void testStripTrailing_emptyParagraphs() {
+        xact_CP_StyledFieldOutput gen = new xact_CP_StyledFieldOutput();
+        String input = '<p>Real content</p><p><strong> </strong></p>';
+        String result = gen.stripTrailingEmptyElements(input);
+        System.assertEquals('<p>Real content</p>', result, 'Should strip trailing empty <p> blocks');
+    }
+
+    @isTest
+    static void testStripTrailing_emptyParagraphWithNbsp() {
+        xact_CP_StyledFieldOutput gen = new xact_CP_StyledFieldOutput();
+        String input = '<p>Content</p><p>&nbsp;</p>';
+        String result = gen.stripTrailingEmptyElements(input);
+        System.assertEquals('<p>Content</p>', result, 'Should strip trailing <p> with only &nbsp;');
+    }
+
+    @isTest
+    static void testStripTrailing_mixedEmptyElements() {
+        xact_CP_StyledFieldOutput gen = new xact_CP_StyledFieldOutput();
+        String input = '<p>Content</p><p><span style="font-size:10pt"> </span></p><br/>';
+        String result = gen.stripTrailingEmptyElements(input);
+        System.assertEquals('<p>Content</p>', result, 'Should strip mixed trailing empty elements');
+    }
+
+    @isTest
+    static void testStripTrailing_nonEmptyParagraphKept() {
+        xact_CP_StyledFieldOutput gen = new xact_CP_StyledFieldOutput();
+        String input = '<p>Content</p><p>More content</p>';
+        String result = gen.stripTrailingEmptyElements(input);
+        System.assertEquals('<p>Content</p><p>More content</p>', result, 'Should keep non-empty trailing paragraphs');
+    }
+
+    @isTest
+    static void testGetHTML_htmlOnlyContent() {
+        CompSuite__Audit__c audit = xact_CP_TestDataFactory.createAudit();
+        // Name stores literal text - '<p></p>' will be treated as HTML
+        // and after tag stripping becomes empty, so getHTML returns ''
+        audit.Name = '<p></p>';
+        update audit;
+
+        Test.startTest();
+        xact_CP_StyledFieldOutput gen = new xact_CP_StyledFieldOutput();
+        String html = gen.getHTML(audit.Id, 'Name');
+        Test.stopTest();
+
+        // Content is all empty HTML tags - after stripping returns empty
+        System.assertEquals('', html, 'Should return empty for HTML-only content with no visible text');
+    }
+
+    @isTest
     static void testGetJSON_returnsNull() {
         Test.startTest();
         xact_CP_StyledFieldOutput gen = new xact_CP_StyledFieldOutput();

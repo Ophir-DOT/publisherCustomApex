@@ -82,6 +82,7 @@ global with sharing class xact_CP_StyledFieldOutput implements CompSuite.CP_Dyna
      * (titled 'RichTextAreaImg') linked to the record before PDF generation.
      * The original private URL is stored in ContentVersion.Description for mapping.
      */
+    @TestVisible
     private String replaceRtaImageUrls(String content, Id recordId) {
         List<ContentDocumentLink> contentLinks = [
             SELECT ContentDocument.LatestPublishedVersion.Id,
@@ -126,6 +127,7 @@ global with sharing class xact_CP_StyledFieldOutput implements CompSuite.CP_Dyna
      * Handles nested tags inside <p> (e.g. <p><strong> </strong></p>)
      * by checking if the text content of the trailing block is only whitespace/nbsp.
      */
+    @TestVisible
     private String stripTrailingEmptyElements(String html) {
         String result = html.trim();
         Boolean changed = true;
