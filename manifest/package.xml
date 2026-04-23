@@ -3,6 +3,8 @@
     <types>
         <members>Xact_CP_Advanced_Custom_ProtocolOutput</members>
         <members>xact_CP_AdvCustomProtoOutput_Test</members>
+        <members>xact_CP_CAPAManagementReport</members>
+        <members>xact_CP_CAPAManagementReport_Test</members>
         <members>xact_CP_Custom_Signature_int_report</members>
         <members>xact_CP_Custom_Signature_int_report_Ctrl</members>
         <members>xact_CP_Custom_Signature_int_report_Test</members>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ApexTestSuite xmlns="http://soap.sforce.com/2006/04/metadata">
     <testClassName>xact_CP_AdvCustomProtoOutput_Test</testClassName>
+    <testClassName>xact_CP_CAPAManagementReport_Test</testClassName>
     <testClassName>xact_CP_Custom_Signature_int_report_Test</testClassName>
     <testClassName>xact_CP_Custom_Signature_sup_report_Test</testClassName>
     <testClassName>xact_CP_ExtRelFindingsOutput_Test</testClassName>
